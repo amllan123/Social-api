@@ -4,11 +4,14 @@ const mongoose =require("mongoose")
 const dotenv=require('dotenv')
 const helmet=require("helmet")
 const morgan=require('morgan')
+const cors=require("cors");
+app.use(cors())
 dotenv.config()
 app.use(express.json())
 app.use(helmet())
 app.use(morgan("common"))
 mongoose.set("strictQuery",true);
+
 // data base connection
 mongoose.connect(process.env.MONGO_URL).then(()=>console.log("Connected to MongoDB")).catch((err)=>{console.log(err);});
 

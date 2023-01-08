@@ -6,7 +6,7 @@ router.post("/",async(req,res)=>{
     const newPost=new Post(req.body)
     try {
         const savedPost=await newPost.save()
-        res.send(201).json(savedPost)
+        res.status(201).json(savedPost)
 
     } catch (error) {
         res.status(500).json(error)
@@ -18,6 +18,7 @@ router.post("/",async(req,res)=>{
 router.delete("/:id", async (req, res) => {
     try {
       const post = await Post.findById(req.params.id);
+      console.log(post.userId,"  ",req.body.userId);
       if (post.userId === req.body.userId) {
         await post.deleteOne();
         res.status(200).json("the post has been deleted");
@@ -57,12 +58,12 @@ router.delete("/:id", async (req, res) => {
   
   //get timeline posts
   
-  router.get("/timeline/all", async (req, res) => {
+  router.get("/timeline/:userId", async (req, res) => {
     try {
-      const currentUser = await User.findById(req.body.userId);
+      const currentUser = await User.findById(req.params.userId);
       const userPosts = await Post.find({ userId: currentUser._id });
       const friendPosts = await Promise.all(
-        currentUser.followings.map((friendId) => {
+        currentUser.following.map((friendId) => {
           return Post.find({ userId: friendId });
         })
       );
